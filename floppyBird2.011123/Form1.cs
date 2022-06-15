@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace floppyBird2._011123
 {
     public partial class FloppyBird : Form
     {
+        System.Windows.Media.MediaPlayer backgroundMedia = new System.Windows.Media.MediaPlayer();
+
         Image PGfloppy = Properties.Resources.PGfloppy;
 
         Image backround = Properties.Resources.backround;
@@ -58,6 +62,10 @@ namespace floppyBird2._011123
         public FloppyBird()
         {
             InitializeComponent();
+            backgroundMedia.Open(new Uri(Application.StartupPath + "/Resources/Kahoot Lobby Music.mp3"));
+          //  backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
+
+            backgroundMedia.Play();
         }
 
         public void GameInitialize()
@@ -89,7 +97,9 @@ namespace floppyBird2._011123
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            //var effectPlayer = new System.Windows.Media.MediaPlayer();
+            //effectPlayer.Open(new Uri(Application.StartupPath + "/Resources/Kahoot_Lobby_Music.mp3"));
+            //effectPlayer.Play();
         }
 
         private void FloppyBird_Paint(object sender, PaintEventArgs e)
