@@ -81,6 +81,16 @@ namespace floppyBird2._011123.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Kahoot_Lobby_Music {
+            get {
+                object obj = ResourceManager.GetObject("Kahoot_Lobby_Music", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap PGfloppy {
