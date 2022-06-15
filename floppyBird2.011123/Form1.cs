@@ -42,6 +42,7 @@ namespace floppyBird2._011123
         int score = 0;
 
         int stateJump = 0;
+        int highScore = 0; 
 
         Rectangle floppy = new Rectangle(50, 223, 25, 25);
 
@@ -95,7 +96,8 @@ namespace floppyBird2._011123
         {
             if (gameState == 1)
             {
-
+                subTitleLabel.Visible = true;
+                subTitleLabel.Text = $""; 
             }
             else if (gameState == 2)
             {
@@ -124,7 +126,8 @@ namespace floppyBird2._011123
             }
             else
             {
-                subTitleLabel.Text = $"";
+                subTitleLabel.Text = $"Your Score was {score}";
+               // subTitleLabel.Text += $"Your High Score is {}"; 
 
             }
         }
