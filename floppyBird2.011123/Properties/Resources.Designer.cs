@@ -99,5 +99,14 @@ namespace floppyBird2._011123.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream sound_only {
+            get {
+                return ResourceManager.GetStream("sound_only", resourceCulture);
+            }
+        }
     }
 }

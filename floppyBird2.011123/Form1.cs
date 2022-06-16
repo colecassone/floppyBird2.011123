@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Media; 
 
 
 namespace floppyBird2._011123
@@ -15,6 +16,9 @@ namespace floppyBird2._011123
     public partial class FloppyBird : Form
     {
         System.Windows.Media.MediaPlayer backgroundMedia = new System.Windows.Media.MediaPlayer();
+        System.Windows.Media.MediaPlayer jumpSound = new System.Windows.Media.MediaPlayer();
+
+
 
         Image PGfloppy = Properties.Resources.PGfloppy;
 
@@ -63,11 +67,18 @@ namespace floppyBird2._011123
         {
             InitializeComponent();
             backgroundMedia.Open(new Uri(Application.StartupPath + "/Resources/Kahoot Lobby Music.mp3"));
-          //  backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
+          backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
 
             backgroundMedia.Play();
-        }
 
+            jumpSound.Open(new Uri(Application.StartupPath + "/Resources/sound only.wav"));
+
+        }
+        private void Media_Ended(object sender, EventArgs e)
+        {
+            backgroundMedia.Stop();
+            backgroundMedia.Play();
+        }
         public void GameInitialize()
         {
             gameState = 2;
@@ -97,9 +108,7 @@ namespace floppyBird2._011123
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //var effectPlayer = new System.Windows.Media.MediaPlayer();
-            //effectPlayer.Open(new Uri(Application.StartupPath + "/Resources/Kahoot_Lobby_Music.mp3"));
-            //effectPlayer.Play();
+            
         }
 
         private void FloppyBird_Paint(object sender, PaintEventArgs e)
@@ -107,7 +116,7 @@ namespace floppyBird2._011123
             if (gameState == 1)
             {
                 subTitleLabel.Visible = true;
-                subTitleLabel.Text = $""; 
+                subTitleLabel.Text = $"Press Space To Start The Game Or Press Escape To Leave"; 
             }
             else if (gameState == 2)
             {
@@ -136,8 +145,16 @@ namespace floppyBird2._011123
             }
             else
             {
+
+                subTitleLabel.Visible = true;
+                titleLabel.Visible = true; 
+                if (score > highScore)
+                {
+                    highScore = score; 
+                }
                 subTitleLabel.Text = $"Your Score was {score}";
-               // subTitleLabel.Text += $"Your High Score is {}"; 
+
+                subTitleLabel.Text += $"\nYour High Score is {highScore}";  
 
             }
         }
@@ -191,6 +208,10 @@ namespace floppyBird2._011123
             if (spaceBar == true)
             {
                 stateJump = 1;
+                //    var effectPlayer = new System.Windows.Media.MediaPlayer();
+                //  effectPlayer.Open(new Uri(Application.StartupPath + "/Resources/sound only.wav"));
+                // effectPlayer.Play();
+               jumpSound.Play();
             }
             // jump anamtion 
             switch (stateJump)

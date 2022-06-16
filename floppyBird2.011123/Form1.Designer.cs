@@ -37,8 +37,8 @@
             // 
             // subTitleLabel
             // 
-            this.subTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.subTitleLabel.Location = new System.Drawing.Point(41, 113);
+            this.subTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.subTitleLabel.Location = new System.Drawing.Point(44, 204);
             this.subTitleLabel.Name = "subTitleLabel";
             this.subTitleLabel.Size = new System.Drawing.Size(244, 111);
             this.subTitleLabel.TabIndex = 5;
