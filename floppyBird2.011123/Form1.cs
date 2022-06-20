@@ -50,7 +50,13 @@ namespace floppyBird2._011123
         public FloppyBird()
         {
             InitializeComponent();
-            Cursor.Hide(); 
+            Cursor.Hide();
+
+            Form backForm = new Form();
+            backForm.WindowState = FormWindowState.Maximized;
+            backForm.FormBorderStyle = FormBorderStyle.None;
+            backForm.BackColor = Color.Black;
+            backForm.Show();
 
             backgroundMedia.Open(new Uri(Application.StartupPath + "/Resources/Kahoot Lobby Music.mp3"));
             backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
