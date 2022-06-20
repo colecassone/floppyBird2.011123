@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Media;
 using System.Windows.Forms;
-using System.IO;
-using System.Media; 
 
 
 namespace floppyBird2._011123
@@ -16,63 +10,52 @@ namespace floppyBird2._011123
     public partial class FloppyBird : Form
     {
         System.Windows.Media.MediaPlayer backgroundMedia = new System.Windows.Media.MediaPlayer();
-        System.Windows.Media.MediaPlayer jumpSound = new System.Windows.Media.MediaPlayer();
-
-
+        SoundPlayer player = new SoundPlayer(Properties.Resources.jumpSound);
 
         Image PGfloppy = Properties.Resources.PGfloppy;
-
         Image backround = Properties.Resources.backround;
-
         Image cloud = Properties.Resources.cloud;
+
         List<Rectangle> movingBackroud = new List<Rectangle>();
+        List<Rectangle> clouds = new List<Rectangle>();
+        Rectangle floppy = new Rectangle(50, 223, 25, 25);
+        List<Rectangle> topTunnel = new List<Rectangle>();
+        List<Rectangle> bottomTunnel = new List<Rectangle>();
+        List<Rectangle> INscore = new List<Rectangle>();
+
         int backroundSpeed = 2;
         int backroundX = 334;
         int backroundY = 243;
         int backRoundCounter = 148;
-
-
-        List<Rectangle> clouds = new List<Rectangle>();
         int cloudsSpeed = 1;
         int cloudX = 47;
         int cloudY = 30;
         int cloudCounter = 0;
-
+        int gameState = 1;
+        int tunnelCount = 0;
+        int speed = 4;
+        int score = 0;
+        int stateJump = 0;
+        int highScore = 0;
 
         bool spaceBar = false;
         bool pause = false;
         bool quit = false;
 
-        int gameState = 1;
-        int tunnelCount = 0;
-        int speed = 4;
-
-        int score = 0;
-
-        int stateJump = 0;
-        int highScore = 0; 
-
-        Rectangle floppy = new Rectangle(50, 223, 25, 25);
-
         Pen drawPen = new Pen(Color.Black, 5);
         SolidBrush backFill = new SolidBrush(Color.Green);
-
-        List<Rectangle> topTunnel = new List<Rectangle>();
-        List<Rectangle> bottomTunnel = new List<Rectangle>();
-        List<Rectangle> INscore = new List<Rectangle>();
 
         Random randGen = new Random();
 
         public FloppyBird()
         {
             InitializeComponent();
+            Cursor.Hide(); 
+
             backgroundMedia.Open(new Uri(Application.StartupPath + "/Resources/Kahoot Lobby Music.mp3"));
-          backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
+            backgroundMedia.MediaEnded += new EventHandler(Media_Ended);
 
             backgroundMedia.Play();
-
-            jumpSound.Open(new Uri(Application.StartupPath + "/Resources/sound only.wav"));
-
         }
         private void Media_Ended(object sender, EventArgs e)
         {
@@ -101,23 +84,22 @@ namespace floppyBird2._011123
             clouds.Clear();
 
             movingBackroud.Add(new Rectangle(0, 333, backroundX, backroundY));
-
-
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void FloppyBird_Paint(object sender, PaintEventArgs e)
         {
+            // Stating screen
             if (gameState == 1)
             {
                 subTitleLabel.Visible = true;
-                subTitleLabel.Text = $"Press Space To Start The Game Or Press Escape To Leave"; 
+                subTitleLabel.Text = $"Press Space To Start The Game Or Press Escape To Leave";
             }
+            //game plaing screen
             else if (gameState == 2)
             {
                 for (int i = 0; i < movingBackroud.Count; i++)
@@ -129,8 +111,7 @@ namespace floppyBird2._011123
                     e.Graphics.DrawImage(cloud, clouds[i]);
                 }
                 e.Graphics.DrawImage(PGfloppy, floppy);
-                //(backFill, floppy);
-                //   score = score / 12; 
+
                 scoreLabel.Text = $"Score is {score}";
 
                 for (int i = 0; i < topTunnel.Count; i++)
@@ -141,20 +122,20 @@ namespace floppyBird2._011123
                 {
                     e.Graphics.FillRectangle(backFill, bottomTunnel[i]);
                 }
-
             }
+            //after you loses
             else
             {
 
                 subTitleLabel.Visible = true;
-                titleLabel.Visible = true; 
+                titleLabel.Visible = true;
                 if (score > highScore)
                 {
-                    highScore = score; 
+                    highScore = score;
                 }
                 subTitleLabel.Text = $"Your Score was {score}";
 
-                subTitleLabel.Text += $"\nYour High Score is {highScore}";  
+                subTitleLabel.Text += $"\nYour High Score is {highScore}";
 
             }
         }
@@ -163,7 +144,7 @@ namespace floppyBird2._011123
         {
             switch (e.KeyCode)
             {
-                case Keys.Q:
+                case Keys.Escape:
                     quit = true;
 
                     if (gameState == 1 || gameState == 3)
@@ -189,7 +170,7 @@ namespace floppyBird2._011123
         {
             switch (e.KeyCode)
             {
-                case Keys.Q:
+                case Keys.Escape:
                     quit = false;
                     break;
                 case Keys.Space:
@@ -208,10 +189,8 @@ namespace floppyBird2._011123
             if (spaceBar == true)
             {
                 stateJump = 1;
-                //    var effectPlayer = new System.Windows.Media.MediaPlayer();
-                //  effectPlayer.Open(new Uri(Application.StartupPath + "/Resources/sound only.wav"));
-                // effectPlayer.Play();
-               jumpSound.Play();
+                player.Stop();
+                player.Play();
             }
             // jump anamtion 
             switch (stateJump)
@@ -246,35 +225,42 @@ namespace floppyBird2._011123
                     stateJump = 0;
                     break;
             }
-            // check if flooppy hit the bottom 
+            // check if floppy hit the bottom 
 
             if (floppy.Y > 476)
             {
                 gameState = 3;
             }
 
-            // Creating the tunnels if it is time 
+            // check if floppy hit the top of the roof
+            if (floppy.Y < -13)
+            {
+                gameState = 3;
+            }
+
+            // Creating the tunnels if it is time and add a scoreing intersetor 
 
             tunnelCount++;
 
             if (tunnelCount == 70)
             {
                 int Random = randGen.Next(1, 350);
+
                 topTunnel.Add(new Rectangle(400, 0, 30, Random));
+
                 INscore.Add(new Rectangle(400, Random + 5, 5, 100));
 
-                //     pointList.Add(new bool (true)); 
                 int hight = 486 - Random - 100;
+
                 Random = Random + 100;
+
                 bottomTunnel.Add(new Rectangle(400, Random, 30, hight));
 
                 tunnelCount = 0;
-
-
             }
 
 
-            ////Moving the tunnes
+            //Moving the tunnes 
 
             for (int i = 0; i < topTunnel.Count; i++)
             {
@@ -286,6 +272,8 @@ namespace floppyBird2._011123
                 int x = bottomTunnel[i].X - speed;
                 bottomTunnel[i] = (new Rectangle(x, bottomTunnel[i].Y, 30, bottomTunnel[i].Height));
             }
+
+            // move scoring interscetor 
 
             for (int i = 0; i < INscore.Count; i++)
             {
@@ -306,14 +294,9 @@ namespace floppyBird2._011123
                 {
                     bottomTunnel.RemoveAt(i);
                 }
-
-
-
             }
 
-
             // intercetion of the tunnels
-
             for (int i = 0; i < bottomTunnel.Count; i++)
             {
                 if (floppy.IntersectsWith(bottomTunnel[i]))
@@ -326,9 +309,7 @@ namespace floppyBird2._011123
                 }
             }
 
-
             // scoring 
-
             for (int i = 0; i < INscore.Count; i++)
             {
                 if (floppy.IntersectsWith(INscore[i]))
@@ -338,11 +319,9 @@ namespace floppyBird2._011123
                     scoreLabel.Text = $"score is {score}";
 
                 }
-
-
             }
-            // city moving backround 
 
+            // city moving backround 
             backRoundCounter++;
             if (backRoundCounter == 149)
             {
@@ -355,17 +334,14 @@ namespace floppyBird2._011123
                 movingBackroud[i] = new Rectangle(x, movingBackroud[i].Y, backroundX, backroundY);
             }
 
-
             // removing ctiys for the list. 
             for (int i = 0; i < movingBackroud.Count; i++)
-
             {
                 if (movingBackroud[i].X <= -400)
                 {
                     movingBackroud.RemoveAt(i);
                 }
             }
-
 
             // clouds moving backround 
             cloudCounter++;
@@ -384,8 +360,6 @@ namespace floppyBird2._011123
             }
 
             // removing clouds 
-
-
             for (int i = 0; i < clouds.Count; i++)
 
             {
